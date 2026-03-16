@@ -1,0 +1,77 @@
+{% load tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% tailwind_css %}
+    <title>Main</title>
+</head>
+
+<body>
+    <div class="container mx-auto">
+        <div class="flex items-center justify-center py-4">
+            <h1 class="text-5xl text-blue-800">Flight TODO</h1>
+        </div>
+        <div class="bg-sky-800 h-0.5 my-5"></div>
+        <div class="flex justify-center">
+            <table
+                class="border-separate border-spacing-0 overflow-hidden border rounded-xl border-gray-300 w-1/2 text-sm">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class=" border-gray-300 font-semibold px-4 py-2">Origin</th>
+                        <th class="border-r border-gray-300 font-semibold px-4 py-2">ICAO</th>
+                        <th class=" border-gray-300 font-semibold px-4 py-2">Dest</th>
+                        <th class=" border-gray-300 font-semibold px-4 py-2">ICAO</th>
+                        <th class=""></th>
+                    </tr>
+                </thead>
+                {% for item in flights %}
+                <tr id={{item.id}}>
+                    <th class=" border-gray-300 font-normal px-4 py-2">{{item.origin}}</th>
+                    <th class="border-r border-gray-300 font-normal px-4 py-2">{{item.originICAO}}</th>
+                    <th class=" border-gray-300 font-normal px-4 py-2">{{item.dest}}</th>
+                    <th class=" border-gray-300 font-normal px-4 py-2">{{item.destICAO}}</th>
+                    <th class=" border-gray-300 font-normal py-2"><input type="checkbox" name="" id=""
+                            class="rounded-lg accent-blue-500"></th>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <button class="rounded-lg bg-sky-500 hover:bg-sky-600 text-white text-l p-2 my-2" onclick="openDialog()">+ Добавить</button>
+        <div id="modal" class="hidden fixed inset-0 backdrop-blur-lg backdrop-brightness-50 flex items-center justify-center">
+            <div class="bg-white rounded-2xl border border-gray-400 p-6">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <span class="flex">
+                        <h2 class="font-black text-2xl mx-1">Добавить полёт</h2>
+                        <button class="bg-red-600 hover:bg-red-400 px-2.5 mx-2 font-bold rounded-lg text-white" type="button" onclick="closeDialog()">X</button>
+                    </span>
+                    
+                    <input type="text" name="origin" class="p-2 my-2 rounded-md border border-gray-300 w-full" placeholder="Откуда">
+                    <br>
+                    <input type="text" name="originICAO" class="p-2 my-2 rounded-md border border-gray-300 w-full" placeholder="ICAO">
+                    <br>
+                    <input type="text" name="dest" class="p-2 my-2 rounded-md border border-gray-300 w-full" placeholder="Куда" required>
+                    <br>
+                    <input type="text" name="destICAO" class="p-2 my-2 rounded-md border border-gray-300 w-full" placeholder="ICAO">
+                    <br>
+                    <button type="submit" class="rounded-lg bg-sky-500 hover:bg-sky-600 text-white text-l p-2 my-2">Добавить</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        function openDialog() {
+            document.getElementById("modal").classList.remove("hidden")
+        }
+
+        function closeDialog() {
+            document.getElementById("modal").classList.add("hidden")
+        }
+    </script>
+</body>
+
+</html>
