@@ -33,7 +33,7 @@
                     <th class="border-r border-gray-300 font-normal px-4 py-2">{{item.originICAO}}</th>
                     <th class=" border-gray-300 font-normal px-4 py-2">{{item.dest}}</th>
                     <th class=" border-gray-300 font-normal px-4 py-2">{{item.destICAO}}</th>
-                    <th class=" border-gray-300 font-normal py-2"><input type="checkbox" name="" id=""
+                    <th class=" border-gray-300 font-normal py-2"><input type="checkbox" name="" id="" {% if item.completed %} checked {% endif %} onchange="changeStatus({{item.id}},this)"
                             class="rounded-lg accent-blue-500"></th>
                 </tr>
                 {% endfor %}
@@ -71,6 +71,21 @@
         function closeDialog() {
             document.getElementById("modal").classList.add("hidden")
         }
+
+        function changeStatus(id, checkbox) {
+            fetch('flights/${id}/toggle', {
+                method : "PUT",
+                headers : {
+                    "Content-Type" : "application/json",
+                    "X-CSRFToken" : "todo"
+                },
+                body : JSON.stringify({
+                    completed : checkbox.checked
+                })
+            })
+        }
+
+        
     </script>
 </body>
 
