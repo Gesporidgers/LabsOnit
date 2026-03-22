@@ -20,7 +20,9 @@ from django.urls import path, include
 from FlightTODO import views
 
 urlpatterns = [
-    path('', views.index)
+    path('', views.index),
+    path('flights/<int:id>/toggle', views.changestatus),
+    path('flights/<int:id>/changecell', views.changecell)
 
 ]
 

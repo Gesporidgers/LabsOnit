@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest, JsonResponse
 from .models import Flight
-
+import json
 
 def index(request : HttpRequest):
     if request.method == 'POST':
@@ -17,10 +17,20 @@ def index(request : HttpRequest):
 
 def changestatus(request : HttpRequest, id : int):
     if request.method == 'PUT':
-        flight = Flight.get_object_or_404(Flight, id=id)
-        flight.completed = request.PUT.get('completed')
+        data = json.loads(request.body)
+        flight = get_object_or_404(Flight, id=id)
+        flight.completed = data.get('completed')
         flight.save()
 
-        return JsonResponse{"status": "changed successfully"}
+        return JsonResponse({"status": "changed successfully"})
+
+def changecell(request : HttpRequest, id : int):
+    if request.method == 'PUT':
+        data = json.loads(request.body)
+        flight = get_object_or_404(Flight, id=id)
+        setattr(flight,data.get('field'),data.get('value'))
+        flight.save()
+
+        return JsonResponse({"status": "changed successfully", "value": data.get('value')})
 
 # Create your views here.

@@ -29,11 +29,11 @@
                 </thead>
                 {% for item in flights %}
                 <tr id={{item.id}}>
-                    <th class=" border-gray-300 font-normal px-4 py-2">{{item.origin}}</th>
-                    <th class="border-r border-gray-300 font-normal px-4 py-2">{{item.originICAO}}</th>
-                    <th class=" border-gray-300 font-normal px-4 py-2">{{item.dest}}</th>
-                    <th class=" border-gray-300 font-normal px-4 py-2">{{item.destICAO}}</th>
-                    <th class=" border-gray-300 font-normal py-2"><input type="checkbox" name="" id="" {% if item.completed %} checked {% endif %} onchange="changeStatus({{item.id}},this)"
+                    <td class=" border-gray-300 font-normal px-4 py-2" onclick="editCell(this,{{item.id}},'origin')">{{item.origin}}</td>
+                    <td class="border-r border-gray-300 font-normal px-4 py-2" onclick="editCell(this,{{item.id}},'origin_icao')">{{item.origin_icao}}</td>
+                    <td class=" border-gray-300 font-normal px-4 py-2" onclick="editCell(this,{{item.id}},'dest')">{{item.dest}}</td>
+                    <td class=" border-gray-300 font-normal px-4 py-2" onclick="editCell(this,{{item.id}},'dest_icao')">{{item.dest_icao}}</td>
+                    <td class=" border-gray-300 font-normal py-2"><input type="checkbox" name="" id="" {% if item.completed %} checked {% endif %} onchange="changeStatus({{item.id}},this)"
                             class="rounded-lg accent-blue-500"></th>
                 </tr>
                 {% endfor %}
@@ -60,24 +60,24 @@
                     <button type="submit" class="rounded-lg bg-sky-500 hover:bg-sky-600 text-white text-l p-2 my-2">Добавить</button>
                 </form>
             </div>
-
+            
         </div>
     </div>
     <script>
         function openDialog() {
-            document.getElementById("modal").classList.remove("hidden")
+            document.getElementById('modal').classList.remove("hidden");
         }
 
         function closeDialog() {
-            document.getElementById("modal").classList.add("hidden")
+            document.getElementById('modal').classList.add("hidden")
         }
 
         function changeStatus(id, checkbox) {
-            fetch('flights/${id}/toggle', {
+            fetch(`flights/${id}/toggle`, {
                 method : "PUT",
                 headers : {
                     "Content-Type" : "application/json",
-                    "X-CSRFToken" : "todo"
+                    "X-CSRFToken" : getCookie("csrftoken")
                 },
                 body : JSON.stringify({
                     completed : checkbox.checked
@@ -85,8 +85,60 @@
             })
         }
 
+        function getCookie(name) {
+            let  cookieValue = null;
+            if (document.cookie && document.cookie !== ""){
+                const cookies = document.cookie.split(";");
+                for (let cookie of cookies){
+                    cookie = cookie.trim();
+                    if (cookie.startsWith(name + "=")){
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
         
+        function editCell(td, id, field){
+            let oldValue;
+            if (td.innerText === undefined){
+                oldValue = '';
+            }
+            else{
+                oldValue = td.innerText;
+            }
+            const input = document.createElement("input");
+            input.value = oldValue;
+
+            td.innerHTML = '';
+            td.appendChild(input);
+            input.focus();
+            input.onblur = () => saveCell(td,input.value,id,field);
+            input,onkeydown = (e) => {
+                if (e.key == 'Enter'){
+                    input.blur();
+                }
+            }
+        }
+
+        function saveCell(td, value, id, field) {
+            fetch(`flights/${id}/changecell`, {
+                method : "PUT",
+                headers : {
+                    "Content-Type" : "application/json",
+                    "X-CSRFToken" : getCookie("csrftoken")
+                },
+                body : JSON.stringify({
+                    field: field,
+                    value: value
+                })
+            })
+            .then(res => res.json())
+            .then(data => {td.innnerText = data.value;})
+            .catch(()=> alert("Error!!"))
+        }
     </script>
 </body>
 
-</html>
+</html>`d
