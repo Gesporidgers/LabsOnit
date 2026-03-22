@@ -33,4 +33,10 @@ def changecell(request : HttpRequest, id : int):
 
         return JsonResponse({"status": "changed successfully", "value": data.get('value')})
 
+def delIt(request : HttpRequest, id : int):
+    if request.method == 'DELETE':
+        print(id)
+        flight = get_object_or_404(Flight, id=id)
+        Flight.delete(flight)
+    return redirect('/')
 # Create your views here.

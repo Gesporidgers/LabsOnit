@@ -25,6 +25,7 @@
                         <th class=" border-gray-300 font-semibold px-4 py-2">Dest</th>
                         <th class=" border-gray-300 font-semibold px-4 py-2">ICAO</th>
                         <th class=""></th>
+                        <th class=""></th>
                     </tr>
                 </thead>
                 {% for item in flights %}
@@ -35,6 +36,7 @@
                     <td class=" border-gray-300 font-normal px-4 py-2" onclick="editCell(this,{{item.id}},'dest_icao')">{{item.dest_icao}}</td>
                     <td class=" border-gray-300 font-normal py-2"><input type="checkbox" name="" id="" {% if item.completed %} checked {% endif %} onchange="changeStatus({{item.id}},this)"
                             class="rounded-lg accent-blue-500"></th>
+                    <td class=" border-gray-300 font-normal py-2"><button class="bg-red-600 hover:bg-red-400 px-2.5 mx-2 font-bold rounded-lg text-white" onclick="delIt({{item.id}})">X</button></th>
                 </tr>
                 {% endfor %}
             </table>
@@ -138,7 +140,17 @@
             .then(data => {td.innnerText = data.value;})
             .catch(()=> alert("Error!!"))
         }
+
+        function delIt(id){
+            fetch(`flights/${id}/`, {
+                method : "DELETE",
+                headers : {
+                    "Content-Type" : "application/json",
+                    "X-CSRFToken" : getCookie("csrftoken")
+                },
+            }).then(()=> location.reload())
+        }
     </script>
 </body>
 
-</html>`d
+</html>
