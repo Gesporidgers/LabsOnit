@@ -7,7 +7,7 @@ services:
       - "8000:8000"
     restart: unless-stopped
     environment:
-      - PYTHONBUFFERED=1
+      - PYTHONUNBUFFERED=1
     depends_on:
       db:
         condition: service_healthy
@@ -24,10 +24,10 @@ services:
     image: postgres:18
     environment:
       - POSTGRES_PASSWORD=123456
-      - POSTGRES_DB=postgres,
+      - POSTGRES_DB=postgres
       - POSTGRES_USER=dbuser
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dbuser"]
+      test: ["CMD-SHELL", "pg_isready -U dbuser -d postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
