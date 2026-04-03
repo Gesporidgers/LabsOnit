@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    container_name: Flight_TODO
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    environment:
+      - PYTHONBUFFERED=1
+    depends_on:
+      - db
+  db:
+    image: postgres:18
+    environment:
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=postgres,
+      - POSTGRES_USER=dbuser
