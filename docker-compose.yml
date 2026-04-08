@@ -8,6 +8,9 @@ services:
     restart: unless-stopped
     environment:
       - PYTHONUNBUFFERED=1
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
     depends_on:
       db:
         condition: service_healthy
@@ -15,6 +18,11 @@ services:
   tailwind:
     build: .
     command: python manage.py tailwind start
+    environment:
+      - PYTHONUNBUFFERED=1
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
     volumes:
       - .:/app
     depends_on:
@@ -23,9 +31,9 @@ services:
   db:
     image: postgres:18
     environment:
-      - POSTGRES_PASSWORD=123456
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U dbuser -d postgres"]
       interval: 5s
