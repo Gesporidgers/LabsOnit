@@ -75,6 +75,6 @@ jobs:
 
     - name: Push Docker image
       run: |
-        IMAGE_NAME=ghcr.io/${{ github.repository }}
+        IMAGE_NAME=ghcr.io/${{ github.repository | lower }}/flight-todo
         docker tag flight-todo $IMAGE_NAME:latest
         docker push $IMAGE_NAME:latest
